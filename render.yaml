@@ -1,19 +1,28 @@
-name=render.yaml
-
 services:
   - type: web
-    name: agreetojoin-backend
+    name: agreetojoin-app
     env: node
+    region: singapore
     plan: free
     branch: main
-    rootDir: server
     buildCommand: npm install && npm run build
-    startCommand: node dist/index.js
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: agreetojoin-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: REMOVE_BG_API_KEY
+        sync: false
 
-  - type: static
-    name: agreetojoin-frontend
+databases:
+  - name: agreetojoin-db
+    databaseName: agreetojoin
     plan: free
-    branch: main
-    rootDir: client
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    region: singapore
