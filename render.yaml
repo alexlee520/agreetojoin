@@ -1,0 +1,19 @@
+name=render.yaml
+
+services:
+  - type: web
+    name: agreetojoin-backend
+    env: node
+    plan: free
+    branch: main
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
+
+  - type: static
+    name: agreetojoin-frontend
+    plan: free
+    branch: main
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
