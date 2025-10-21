@@ -1,3 +1,9 @@
+databases:
+  - name: agreetojoin-db
+    databaseName: agreetojoin
+    plan: free
+    region: singapore
+
 services:
   - type: web
     name: agreetojoin-app
@@ -20,9 +26,3 @@ services:
         sync: false
       - key: REMOVE_BG_API_KEY
         sync: false
-
-databases:
-  - name: agreetojoin-db
-    databaseName: agreetojoin
-    plan: free
-    region: singapore
