@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
+import rateLimit from 'express-rate-limit';
 
 // Load environment variables
 dotenv.config();
@@ -60,8 +61,15 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
+// Rate limiter for database test endpoint
+const dbTestLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+});
+
 // Database test endpoint
-app.get('/db-test', async (req: Request, res: Response) => {
+app.get('/db-test', dbTestLimiter, async (req: Request, res: Response) => {
   if (!db) {
     return res.status(503).json({
       error: 'Database not configured',
