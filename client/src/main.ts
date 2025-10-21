@@ -1,7 +1,12 @@
-// Simple TypeScript client entry point
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import Form from './pages/Form';
+
 console.log('Store Partner Management System - Client initialized');
 
 const root = document.getElementById('root');
 if (root) {
-  root.innerHTML = '<h1>商店合作夥伴管理系統</h1><p>Client is running</p>';
+  ReactDOM.createRoot(root).render(
+    React.createElement(Form)
+  );
 }
