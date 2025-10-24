@@ -1,0 +1,17 @@
+{
+  "name": "agreetojoin",
+  "version": "1.0.0",
+  "description": "Store Partnership Management System",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "echo 'No build step required'",
+    "dev": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
