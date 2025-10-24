@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,24 @@ if (process.env.GEMINI_API_KEY) {
 // Middleware to parse JSON
 app.use(express.json());
 
+// Rate limiting for API endpoints
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Rate limiting for expensive operations (database and AI)
+const expensiveLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs for expensive operations
+  message: 'Too many requests for this operation, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // 根路徑回應，用於 Render 健康檢查或瀏覽器直接存取
 app.get('/', (req, res) => {
   res.send('Service is running');
@@ -32,7 +51,7 @@ app.get('/status', (req, res) => {
 });
 
 // Test database endpoint (placeholder implementation)
-app.get('/api/test-db', async (req, res) => {
+app.get('/api/test-db', expensiveLimiter, async (req, res) => {
   try {
     // Test database connection
     const client = await pool.connect();
@@ -60,7 +79,7 @@ app.get('/api/test-db', async (req, res) => {
 });
 
 // Generate contract endpoint (placeholder implementation)
-app.post('/api/generateContract', async (req, res) => {
+app.post('/api/generateContract', expensiveLimiter, async (req, res) => {
   try {
     const { 
       partnershipType, 
