@@ -4,9 +4,12 @@ services:
     env: node
     region: singapore
     plan: free
+    repo: https://github.com/alexlee520/agreetojoin
     branch: main
+    autoDeploy: true
     buildCommand: npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production
@@ -24,5 +27,6 @@ services:
 databases:
   - name: agreetojoin-db
     databaseName: agreetojoin
+    user: agreetojoin
     plan: free
     region: singapore
